@@ -1,6 +1,10 @@
 package me.zjor.guice;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import me.zjor.JpaInitializer;
+import me.zjor.controller.AjaxController;
+import me.zjor.manager.TaskManager;
 
 /**
  * @author: Sergey Royz
@@ -10,7 +14,10 @@ public class GuiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        //TODO
+        bind(JpaInitializer.class).asEagerSingleton();
 
+        bind(TaskManager.class).in(Singleton.class);
+
+        bind(AjaxController.class).in(Singleton.class);
     }
 }

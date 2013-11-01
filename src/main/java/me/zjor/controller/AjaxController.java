@@ -1,7 +1,10 @@
 package me.zjor.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.manager.TaskManager;
+import me.zjor.model.Task;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
@@ -15,13 +18,20 @@ import java.util.List;
 @Path("/api/tasks")
 public class AjaxController {
 
-    private List<String> tasks = new ArrayList<String>();
+    @Inject
+    private TaskManager taskManager;
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<String> getTasks() {
         log.info("Requesting tasks");
+
+        List<String> tasks = new ArrayList<String>();
+        for (Task t: taskManager.fetchAll()) {
+            tasks.add(t.getTask());
+        }
+
         return tasks;
     }
 
@@ -29,7 +39,7 @@ public class AjaxController {
     @Path("/add")
     public void addTask(@FormParam("task") String task) {
         log.info("Adding task: {}", task);
-        tasks.add(task);
+        taskManager.add(task);
     }
 
 }

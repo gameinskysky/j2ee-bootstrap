@@ -5,17 +5,18 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 
-    <persistence-unit name="TinyCRMJpaUnit" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="AppJpaUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
+        <class>me.zjor.model.Task</class>
 
         <properties>
-            <property name="hibernate.connection.driver_class" value="${db.driverclass}"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.connection.url" value="${db.url}"/>
             <property name="hibernate.connection.username" value="${db.username}"/>
             <property name="hibernate.connection.password" value="${db.password}"/>
-            <property name="hibernate.dialect" value="${db.dialect}"/>
-            <property name="hibernate.hbm2ddl.auto" value="${db.hibernate.tablestrategy}"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.default_schema" value="${db.schema}"/>
         </properties>

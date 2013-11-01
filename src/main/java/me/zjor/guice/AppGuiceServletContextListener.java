@@ -2,6 +2,7 @@ package me.zjor.guice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.GuiceServletContextListener;
 
 /**
@@ -12,7 +13,6 @@ public class AppGuiceServletContextListener extends GuiceServletContextListener 
 
     @Override
     protected Injector getInjector() {
-        //TODO: add JPA Unit
-        return Guice.createInjector(new GuiceModule(), new GuiceServletModule());
+        return Guice.createInjector(new JpaPersistModule("AppJpaUnit"), new GuiceModule(), new GuiceServletModule());
     }
 }
