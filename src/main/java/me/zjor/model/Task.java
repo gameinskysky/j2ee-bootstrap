@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class Task implements Serializable {
 
     @Id
     @GeneratedValue(generator="system-uuid")
@@ -30,7 +31,6 @@ public class Task {
 
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
-
 
     public static Task create(EntityManager em, String task) {
         Task t = new Task();

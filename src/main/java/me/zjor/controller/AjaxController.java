@@ -7,7 +7,6 @@ import me.zjor.model.Task;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,22 +23,24 @@ public class AjaxController {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<String> getTasks() {
+    public List<Task> getTasks() {
         log.info("Requesting tasks");
-
-        List<String> tasks = new ArrayList<String>();
-        for (Task t: taskManager.fetchAll()) {
-            tasks.add(t.getTask());
-        }
-
-        return tasks;
+        return taskManager.fetchAll();
     }
 
     @POST
     @Path("/add")
-    public void addTask(@FormParam("task") String task) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Task addTask(@FormParam("task") String task) {
         log.info("Adding task: {}", task);
-        taskManager.add(task);
+        return taskManager.add(task);
+    }
+
+    @POST
+    @Path("/delete")
+    public void deleteTask(@FormParam("id") String id) {
+        log.info("removing task with id: {}", id);
+        taskManager.remove(id);
     }
 
 }

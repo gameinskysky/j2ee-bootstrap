@@ -1,18 +1,42 @@
 body {
-    width: 980px;
+    width: 640px;
     margin: 0 auto;
+    font-family: Trebuchet MS;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
     padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 input[type="text"] {
-    margin-bottom: 20px;
+    margin: 10px;
+    width: 100%;
+    line-height: 1.5em;
+    text-indent: 0.5em;
 }
 
 li {
     margin: 4px;
     padding: 5px;
+    background-color: #a5a5a5;
 }
 
 li:hover {
     background-color: lightblue;
+}
+
+.clearfix {
+    clear: both;
+    overflow: auto;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
 }
