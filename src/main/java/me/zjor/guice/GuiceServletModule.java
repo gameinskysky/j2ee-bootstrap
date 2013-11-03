@@ -13,6 +13,7 @@ public class GuiceServletModule extends ServletModule {
     @Override
     protected void configureServlets() {
         filter("/*").through(GuiceContainer.class, ImmutableMap.of(
+                "com.sun.jersey.config.property.JSPTemplatesBasePath", "/jsp",
                 "com.sun.jersey.config.property.WebPageContentRegex", "(/static/.*)|(.*\\.jsp)",
                 "com.sun.jersey.api.json.POJOMappingFeature", "true"
         ));

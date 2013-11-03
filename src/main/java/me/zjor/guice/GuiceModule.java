@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import me.zjor.JpaInitializer;
 import me.zjor.controller.AjaxController;
+import me.zjor.controller.SampleController;
 import me.zjor.manager.TaskManager;
 
 /**
@@ -19,5 +20,6 @@ public class GuiceModule extends AbstractModule {
         bind(TaskManager.class).in(Singleton.class);
 
         bind(AjaxController.class).in(Singleton.class);
+        bind(SampleController.class).in(Singleton.class);
     }
 }
