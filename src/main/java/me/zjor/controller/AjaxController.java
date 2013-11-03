@@ -21,7 +21,6 @@ public class AjaxController {
     private TaskManager taskManager;
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Task> getTasks() {
         log.info("Requesting tasks");
