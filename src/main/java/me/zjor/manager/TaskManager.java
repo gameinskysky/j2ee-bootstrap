@@ -12,14 +12,7 @@ import java.util.List;
  * @author: Sergey Royz
  * @since: 01.11.2013
  */
-public class TaskManager {
-
-    @Inject
-    private Provider<EntityManager> emProvider;
-
-    private EntityManager jpa() {
-        return emProvider.get();
-    }
+public class TaskManager extends AbstractManager {
 
     @Transactional
     public Task add(String task) {
