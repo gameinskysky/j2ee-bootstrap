@@ -1,6 +1,7 @@
 package me.zjor.controller;
 
 import com.sun.jersey.api.view.Viewable;
+import lombok.extern.slf4j.Slf4j;
 import me.zjor.session.Session;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author: Sergey Royz
  * @since: 03.11.2013
  */
+@Slf4j
 @Path("/jsp")
 public class SampleController {
 
@@ -26,6 +28,7 @@ public class SampleController {
     public Response home(@QueryParam("name") String name) {
 
         if (StringUtils.isEmpty(name)) {
+            log.info("name is empty, loading from session: {}", Session.getCurrent().getStorage());
             name = Session.getCurrent().getStorage().get("name");
         } else {
             Session.getCurrent().getStorage().put("name", name);

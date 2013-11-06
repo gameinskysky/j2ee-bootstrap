@@ -1,7 +1,9 @@
 package me.zjor.session;
 
+import lombok.extern.slf4j.Slf4j;
 import me.zjor.util.CookieUtils;
 
+import javax.inject.Inject;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,9 +13,13 @@ import java.io.IOException;
  * @author: Sergey Royz
  * @since: 04.11.2013
  */
+@Slf4j
 public class SessionFilter implements Filter {
 
     public static final String SESSION_ID_COOKIE_KEY = "ssid";
+
+    @Inject
+    private Session session;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -26,12 +32,13 @@ public class SessionFilter implements Filter {
 
         String sessionId = CookieUtils.getCookieValue(request, SESSION_ID_COOKIE_KEY);
 
-        if (sessionId == null || Session.getSession(sessionId) == null) {
-            sessionId = Session.createSession();
+        if (sessionId == null || session.getSession(sessionId) == null) {
+            log.info("Session doesn't exist. Creating...");
+            sessionId = session.createSession();
             CookieUtils.setCookie(response, SESSION_ID_COOKIE_KEY, sessionId);
         }
 
-        Session.setCurrent(Session.getSession(sessionId));
+        Session.setCurrent(session.getSession(sessionId));
 
         chain.doFilter(request, response);
     }

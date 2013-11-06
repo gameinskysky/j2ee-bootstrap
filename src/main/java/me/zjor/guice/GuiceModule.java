@@ -6,6 +6,8 @@ import me.zjor.JpaInitializer;
 import me.zjor.controller.AjaxController;
 import me.zjor.controller.SampleController;
 import me.zjor.manager.TaskManager;
+import me.zjor.session.Session;
+import me.zjor.session.SessionManager;
 
 /**
  * @author: Sergey Royz
@@ -16,6 +18,9 @@ public class GuiceModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JpaInitializer.class).asEagerSingleton();
+
+        bind(SessionManager.class).in(Singleton.class);
+        bind(Session.class).in(Singleton.class);
 
         bind(TaskManager.class).in(Singleton.class);
 

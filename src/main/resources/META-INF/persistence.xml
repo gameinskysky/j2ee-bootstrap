@@ -9,6 +9,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
         <class>me.zjor.model.Task</class>
+        <class>me.zjor.session.SessionModel</class>
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
