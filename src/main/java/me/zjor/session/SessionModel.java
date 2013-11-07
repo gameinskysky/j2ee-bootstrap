@@ -22,9 +22,8 @@ public class SessionModel {
     @Column(name = "session_id", unique = true)
     private String sessionId;
 
-//    @Lob
-    @Column(name = "session_data")
-    private byte[] sessionData;
+    @Column(name = "session_data", columnDefinition = "TEXT")
+    private String sessionData;
 
     @Column(name = "expiration_date")
     private Date expirationDate;
