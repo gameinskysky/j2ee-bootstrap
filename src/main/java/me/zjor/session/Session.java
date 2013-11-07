@@ -1,8 +1,8 @@
 package me.zjor.session;
 
 import lombok.Data;
+import lombok.Setter;
 
-import javax.inject.Inject;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,16 +12,13 @@ import java.util.UUID;
  * @author: Sergey Royz
  * @since: 04.11.2013
  */
-//TODO: rework this class
 @Data
 public class Session {
 
-    public static final long DEFAULT_EXPIRATION_PERIOD_SECONDS = 10L * 24 * 3600;
+    public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 10L * 24 * 3600 * 1000;
 
-    private static ThreadLocal<Session> sessionHolder = new ThreadLocal<Session>();
-
-    @Inject
-    private SessionManager manager;
+    @Setter
+    private static SessionService service;
 
     private String sessionId;
 
@@ -32,7 +29,7 @@ public class Session {
     public Session() {
         sessionId = UUID.randomUUID().toString();
         storage = new LinkedHashMap<String, String>();
-        expirationDate = new Date(new Date().getTime() + DEFAULT_EXPIRATION_PERIOD_SECONDS * 1000);
+        expirationDate = new Date(new Date().getTime() + DEFAULT_EXPIRATION_PERIOD_MILLIS);
     }
 
     protected Session(String sessionId, Map<String, String> storage, Date expirationDate) {
@@ -41,22 +38,46 @@ public class Session {
         this.expirationDate = expirationDate;
     }
 
-    public String createSession() {
-        Session session = new Session();
-        manager.persist(session);
-        return session.getSessionId();
+    public static Session create() {
+        if (service == null) {
+            throw new RuntimeException("Session service was not initialized");
+        }
+
+        return service.create();
     }
 
-    public Session getSession(String sessionId) {
-        return manager.loadSession(sessionId);
+    public static Session init(String id) {
+        if (service == null) {
+            throw new RuntimeException("Session service was not initialized");
+        }
+        return service.load(id);
     }
 
-    public static void setCurrent(Session session) {
-        sessionHolder.set(session);
+    public static String get(String key) {
+        if (service == null) {
+            throw new RuntimeException("Session service was not initialized");
+        }
+
+        Session current = service.getCurrent();
+        if (current == null) {
+            throw new RuntimeException("Session doesn't exist");
+        }
+        return current.getStorage().get(key);
     }
 
-    public static Session getCurrent() {
-        return sessionHolder.get();
+    public static void put(String key, String value) {
+        if (service == null) {
+            throw new RuntimeException("Session service was not initialized");
+        }
+
+        Session current = service.getCurrent();
+        if (current == null) {
+            throw new RuntimeException("Session doesn't exist");
+        }
+
+        current.getStorage().put(key, value);
+        service.update(current);
     }
+
 
 }
