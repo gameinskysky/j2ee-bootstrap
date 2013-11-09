@@ -18,6 +18,10 @@ public class SessionService {
         Session.setService(this);
     }
 
+    /**
+     * Creates new session, persists it into database and sets as current in ThreadLocal.
+     * @return
+     */
     public Session create() {
         Session session = new Session();
         manager.persist(session);
@@ -25,8 +29,17 @@ public class SessionService {
         return session;
     }
 
+    /**
+     * Loads session and invalidates if expired.
+     * If session is valid extends expiration date and sets in ThreadLocal.
+     * @param id
+     * @return
+     */
     public Session load(String id) {
         Session session = manager.loadSession(id);
+        if (session.getExpirationDate().before(new Date())) {
+            return null;
+        }
         setCurrent(session);
         update(session);
         return session;

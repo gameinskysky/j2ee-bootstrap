@@ -2,10 +2,12 @@ package me.zjor.manager;
 
 import com.google.inject.persist.Transactional;
 import me.zjor.model.Task;
+import me.zjor.util.JpaQueryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -20,16 +22,7 @@ public class TaskManager extends AbstractManager {
     }
 
     public Task findById(String taskId) {
-        List<Task> result =
-                jpa()
-                        .createQuery("SELECT t FROM Task t WHERE t.id = :id")
-                        .setParameter("id", taskId)
-                        .getResultList();
-        if (result.isEmpty()) {
-            return null;
-        }
-
-        return result.get(0);
+        return jpa().find(Task.class, taskId);
     }
 
     @Transactional

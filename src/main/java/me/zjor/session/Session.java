@@ -15,6 +15,9 @@ import java.util.UUID;
 @Data
 public class Session {
 
+    /**
+     * Default expiration period is 10 days
+     */
     public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 10L * 24 * 3600 * 1000;
 
     @Setter
@@ -76,6 +79,20 @@ public class Session {
         }
 
         current.getStorage().put(key, value);
+        service.update(current);
+    }
+
+    public static void remove(String key) {
+        if (service == null) {
+            throw new RuntimeException("Session service was not initialized");
+        }
+
+        Session current = service.getCurrent();
+        if (current == null) {
+            throw new RuntimeException("Session doesn't exist");
+        }
+
+        current.getStorage().remove(key);
         service.update(current);
     }
 

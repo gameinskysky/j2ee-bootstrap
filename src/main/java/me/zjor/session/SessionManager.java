@@ -4,9 +4,7 @@ import com.google.inject.persist.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import me.zjor.manager.AbstractManager;
 import me.zjor.util.CypherUtils;
-import me.zjor.util.JpaQueryUtils;
 
-import javax.persistence.TypedQuery;
 import java.util.Map;
 
 /**
@@ -41,10 +39,7 @@ public class SessionManager extends AbstractManager {
     }
 
     private SessionModel findById(String id) {
-        TypedQuery<SessionModel> query = jpa()
-                .createQuery("SELECT s FROM SessionModel s WHERE s.sessionId = :id", SessionModel.class)
-                .setParameter("id", id);
-        return JpaQueryUtils.getFirstOrNull(query);
+        return jpa().find(SessionModel.class, id);
     }
 
 
