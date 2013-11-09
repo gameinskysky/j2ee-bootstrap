@@ -15,11 +15,11 @@
 <body>
 
 <c:if test="${it.failed}">
-<div class="notice">
-    <a href="" class="close">close</a>
+    <div class="notice">
+        <a href="" class="close">close</a>
 
-    <p class="warn">Whoops! We didn't recognise your username or password. Please try again.</p>
-</div>
+        <p class="warn">Failed to register a new user. This username already exists.</p>
+    </div>
 </c:if>
 
 
@@ -27,7 +27,7 @@
 
     <div class="form-bg">
         <form method="post">
-            <h2>Login</h2>
+            <h2>Register a new user</h2>
 
             <p><input type="text" name="login" placeholder="Username"></p>
 
@@ -36,7 +36,6 @@
         </form>
     </div>
 
-    <p class="forgot">Not a member? <a href="${baseURL}/register">Register</a></p>
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>

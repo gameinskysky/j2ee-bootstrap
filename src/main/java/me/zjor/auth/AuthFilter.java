@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * @author: Sergey Royz
@@ -19,6 +20,7 @@ public class AuthFilter implements Filter {
     public static final String SESSION_KEY_AUTH_USER_ID = "auth_user_id";
     public static final String SESSION_KEY_AUTH_NEXT = "auth_next";
     public static final String LOGIN_REDIRECT_URL = "/login/";
+    public static final Pattern ALLOW_URI_REGEXP = Pattern.compile("(/login/?)|(/register/?)|(/static/.*)");
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -31,7 +33,7 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         String userId = Session.get(SESSION_KEY_AUTH_USER_ID);
-        if (userId == null && !isLoginURL(request)) {
+        if (userId == null && !allowPassThrough(request)) {
             Session.put(SESSION_KEY_AUTH_NEXT, HttpUtils.getRequestURL(request));
             response.sendRedirect(HttpUtils.getBaseURL(request) + LOGIN_REDIRECT_URL);
         } else {
@@ -44,13 +46,8 @@ public class AuthFilter implements Filter {
      * @param request
      * @return
      */
-    private boolean isLoginURL(HttpServletRequest request) {
-        String path = request.getServletPath();
-        if (path.charAt(path.length() - 1) != '/') {
-            path += "/";
-        }
-
-        return LOGIN_REDIRECT_URL.equals(path);
+    private boolean allowPassThrough(HttpServletRequest request) {
+        return ALLOW_URI_REGEXP.matcher(request.getServletPath()).matches();
     }
 
     @Override
