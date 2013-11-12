@@ -47,14 +47,15 @@
 
     function updateListeners() {
         $("li").find("div[class='right delete']").hide();
-        $("li").mouseover(function(e) {
+        $("li").unbind().mouseover(function(e) {
                     $(this).find("div[class='right delete']").show();
                 })
                 .mouseout(function(e) {
                     $(this).find("div[class='right delete']").hide();
                 });
-        $("li").find("a").click(function (e) {
+        $("li").find("a").unbind().click(function (e) {
             var taskId = $(this).attr("data-ref");
+            console.log('deleting task: ' + taskId);
             $.post("api/tasks/delete", {id: taskId}, function(response) {
                 loadTasks();
             });
