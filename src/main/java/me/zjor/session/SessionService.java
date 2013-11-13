@@ -37,6 +37,9 @@ public class SessionService {
      */
     public Session load(String id) {
         Session session = manager.loadSession(id);
+        if (session == null) {
+            return null;
+        }
         if (session.getExpirationDate().before(new Date())) {
             return null;
         }

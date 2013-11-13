@@ -16,6 +16,7 @@
 
     out.println("Name is: " + pageContext.findAttribute("it"));
 %>
-
+<h2>user ID: ${it.userId}</h2>
+<h2>user: ${it.user}</h2>
 </body>
 </html>

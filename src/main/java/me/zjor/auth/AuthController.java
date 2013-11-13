@@ -20,7 +20,7 @@ import java.util.Collections;
 public class AuthController {
 
     @Inject
-    private UserManager userManager;
+    private AuthUserManager userManager;
 
     @GET
     @Path("/login")
@@ -36,7 +36,7 @@ public class AuthController {
             @FormParam("login") String login,
             @FormParam("password") String password
     ) {
-        User user = userManager.authenticate(login, password);
+        AuthUser user = userManager.authenticate(login, password);
         if (user == null) {
             return Response.ok(new Viewable("/login", Collections.singletonMap("failed", Boolean.TRUE))).build();
         }
@@ -72,7 +72,7 @@ public class AuthController {
         if (failed) {
             return Response.ok(new Viewable("/register", Collections.singletonMap("failed", Boolean.TRUE))).build();
         }
-        User user = userManager.create(login, password);
+        AuthUser user = userManager.create(login, password);
 
         Session.put(AuthFilter.SESSION_KEY_AUTH_USER_ID, user.getId());
         String nextURL = Session.get(AuthFilter.SESSION_KEY_AUTH_NEXT);

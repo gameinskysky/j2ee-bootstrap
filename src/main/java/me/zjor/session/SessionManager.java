@@ -38,6 +38,7 @@ public class SessionManager extends AbstractManager {
         return new Session(sessionId, decryptedData, model.getExpirationDate());
     }
 
+    @Transactional
     private SessionModel findById(String id) {
         return jpa().find(SessionModel.class, id);
     }

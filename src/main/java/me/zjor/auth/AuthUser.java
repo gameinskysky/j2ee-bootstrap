@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "auth_user")
-public class User {
+public class AuthUser {
 
     @Id
     @GeneratedValue(generator="system-uuid")

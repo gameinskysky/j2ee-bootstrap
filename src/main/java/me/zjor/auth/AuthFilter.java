@@ -37,6 +37,7 @@ public class AuthFilter implements Filter {
             Session.put(SESSION_KEY_AUTH_NEXT, HttpUtils.getRequestURL(request));
             response.sendRedirect(HttpUtils.getBaseURL(request) + LOGIN_REDIRECT_URL);
         } else {
+            AuthUserService.setUserId(userId);
             chain.doFilter(req, resp);
         }
     }
