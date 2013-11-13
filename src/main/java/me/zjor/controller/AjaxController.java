@@ -1,6 +1,7 @@
 package me.zjor.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.auth.AuthUserService;
 import me.zjor.manager.TaskManager;
 import me.zjor.model.Task;
 
@@ -20,11 +21,14 @@ public class AjaxController {
     @Inject
     private TaskManager taskManager;
 
+    @Inject
+    private AuthUserService userService;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Task> getTasks() {
         log.info("Requesting tasks");
-        return taskManager.fetchAll();
+        return taskManager.fetchAll(userService.get().getId());
     }
 
     @POST
@@ -32,7 +36,7 @@ public class AjaxController {
     @Produces(MediaType.APPLICATION_JSON)
     public Task addTask(@FormParam("task") String task) {
         log.info("Adding task: {}", task);
-        return taskManager.add(task);
+        return taskManager.add(userService.get(), task);
     }
 
     @POST

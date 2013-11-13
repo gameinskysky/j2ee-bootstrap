@@ -2,15 +2,10 @@ package me.zjor.manager;
 
 import com.google.inject.persist.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.auth.AuthUser;
 import me.zjor.model.Task;
-import me.zjor.util.JpaQueryUtils;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.LockModeType;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -21,8 +16,8 @@ import java.util.List;
 public class TaskManager extends AbstractManager {
 
     @Transactional
-    public Task add(String task) {
-        return Task.create(jpa(), task);
+    public Task add(AuthUser user, String task) {
+        return Task.create(jpa(), user, task);
     }
 
     public Task findById(String taskId) {
@@ -41,8 +36,11 @@ public class TaskManager extends AbstractManager {
         }
     }
 
-    public List<Task> fetchAll() {
-        return jpa().createQuery("SELECT t FROM Task t ORDER BY t.creationDate ASC", Task.class).getResultList();
+    public List<Task> fetchAll(String userId) {
+        return jpa()
+                .createQuery("SELECT t FROM Task t WHERE t.user.id = :id ORDER BY t.creationDate ASC", Task.class)
+                .setParameter("id", userId)
+                .getResultList();
     }
 
 

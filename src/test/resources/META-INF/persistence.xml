@@ -8,6 +8,7 @@
     <persistence-unit name="TestJpaUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
+        <class>me.zjor.auth.AuthUser</class>
         <class>me.zjor.model.Task</class>
 
         <properties>

@@ -1,5 +1,7 @@
 package me.zjor.manager;
 
+import me.zjor.auth.AuthUser;
+import me.zjor.auth.AuthUserManager;
 import me.zjor.guice.TestRunner;
 import me.zjor.model.Task;
 import org.junit.After;
@@ -26,6 +28,9 @@ public class TaskManagerTest {
     @Inject
     private TaskManager taskManager;
 
+    @Inject
+    private AuthUserManager userManager;
+
     @Before
     public void setUp() throws Exception {
         em.getTransaction().begin();
@@ -42,7 +47,8 @@ public class TaskManagerTest {
 
     @Test
     public void testCreation() {
-        Task t = taskManager.add("todo");
+        AuthUser user = userManager.create("login", "password");
+        Task t = taskManager.add(user, "todo");
         em.flush();
 
         TypedQuery<Task> query = em.createQuery(
@@ -52,10 +58,11 @@ public class TaskManagerTest {
 
     @Test
     public void testFetch() {
-        taskManager.add("todo");
+        AuthUser user = userManager.create("login", "password");
+        taskManager.add(user, "todo");
         em.flush();
 
-        assertEquals(1, taskManager.fetchAll().size());
+        assertEquals(1, taskManager.fetchAll(user.getId()).size());
     }
 
 }
