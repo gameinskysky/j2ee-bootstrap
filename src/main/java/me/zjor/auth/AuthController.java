@@ -82,5 +82,4 @@ public class AuthController {
                 Collections.singletonMap("url", nextURL))).build();
     }
 
-
 }

@@ -29,6 +29,11 @@ public class SessionManager extends AbstractManager {
         jpa().persist(model);
     }
 
+    /**
+     * Retrieves session model by id and decrypts session data
+     * @param sessionId
+     * @return
+     */
     public Session loadSession(String sessionId) {
         SessionModel model = findById(sessionId);
         if (model == null) {
@@ -36,6 +41,16 @@ public class SessionManager extends AbstractManager {
         }
         Map<String, String> decryptedData = CypherUtils.decrypt(sessionId, model.getSessionData());
         return new Session(sessionId, decryptedData, model.getExpirationDate());
+    }
+
+    //TODO: consider synchronization & lock
+    //TODO: remove stale sessions in background
+    @Transactional
+    public void remove(String sessionId) {
+        SessionModel model = findById(sessionId);
+        if (model != null) {
+            jpa().remove(model);
+        }
     }
 
     @Transactional

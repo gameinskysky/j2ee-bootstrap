@@ -18,7 +18,7 @@ public class Session {
     /**
      * Default expiration period is 10 days
      */
-    public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 10L * 24 * 3600 * 1000;
+    public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 10L * 60 * 1000;
 
     @Setter
     private static SessionService service;
@@ -94,6 +94,23 @@ public class Session {
 
         current.getStorage().remove(key);
         service.update(current);
+    }
+
+    /**
+     * Removes current session from the database
+     * @throws RuntimeException if there is no active session
+     */
+    public static void clear() {
+        if (service == null) {
+            throw new RuntimeException("Session service was not initialized");
+        }
+
+        Session current = service.getCurrent();
+        if (current == null) {
+            throw new RuntimeException("Session doesn't exist");
+        }
+
+        service.remove(current.getSessionId());
     }
 
 

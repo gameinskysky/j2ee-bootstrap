@@ -32,20 +32,25 @@ public class SessionService {
     /**
      * Loads session and invalidates if expired.
      * If session is valid extends expiration date and sets in ThreadLocal.
-     * @param id
+     * @param sessionId
      * @return
      */
-    public Session load(String id) {
-        Session session = manager.loadSession(id);
+    public Session load(String sessionId) {
+        Session session = manager.loadSession(sessionId);
         if (session == null) {
             return null;
         }
         if (session.getExpirationDate().before(new Date())) {
+            manager.remove(sessionId);
             return null;
         }
         setCurrent(session);
         update(session);
         return session;
+    }
+
+    public void remove(String sessionId) {
+        manager.remove(sessionId);
     }
 
     public void update(Session session) {
