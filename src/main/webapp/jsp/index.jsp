@@ -8,6 +8,13 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 </head>
 <body>
+
+<div class="right">
+    <p>
+    Logged in as ${it.user.login}
+    </p>
+</div>
+
 <h1>Simple TODO-list app</h1>
 
 <input id="newTaskInput" type="text" placeholder="Enter new task here"/>

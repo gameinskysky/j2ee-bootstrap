@@ -34,12 +34,9 @@ public class SampleController {
     @Inject
     private AuthUserService userService;
 
-
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response home(@QueryParam("name") String name) {
-
-
 
         if (StringUtils.isEmpty(name)) {
             name = Session.get("name");

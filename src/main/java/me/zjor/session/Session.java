@@ -18,7 +18,7 @@ public class Session {
     /**
      * Default expiration period is 10 days
      */
-    public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 10L * 60 * 1000;
+    public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 24L * 3600 * 1000;
 
     @Setter
     private static SessionService service;
