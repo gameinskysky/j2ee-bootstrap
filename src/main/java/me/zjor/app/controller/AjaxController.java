@@ -1,9 +1,9 @@
-package me.zjor.controller;
+package me.zjor.app.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.app.dto.TaskDTO;
+import me.zjor.app.manager.TaskManager;
 import me.zjor.auth.AuthUserService;
-import me.zjor.manager.TaskManager;
-import me.zjor.model.Task;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -26,23 +26,22 @@ public class AjaxController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Task> getTasks() {
-        log.info("Requesting tasks");
-        return taskManager.fetchAll(userService.get().getId());
+    public List<TaskDTO> getTasks() {
+        return TaskDTO.fromCollection(taskManager.fetchAll(userService.get().getId()));
     }
 
     @POST
     @Path("/add")
     @Produces(MediaType.APPLICATION_JSON)
-    public Task addTask(@FormParam("task") String task) {
-        log.info("Adding task: {}", task);
-        return taskManager.add(userService.get(), task);
+    public TaskDTO addTask(@FormParam("task") String task) {
+        AjaxController.log.info("Adding task: {}", task);
+        return TaskDTO.fromModel(taskManager.add(userService.get(), task));
     }
 
     @POST
     @Path("/delete")
     public void deleteTask(@FormParam("id") String id) {
-        log.info("removing task with id: {}", id);
+        AjaxController.log.info("removing task with id: {}", id);
         taskManager.remove(id);
     }
 

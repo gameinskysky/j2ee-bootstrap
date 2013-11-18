@@ -1,9 +1,10 @@
 package me.zjor.manager;
 
+import me.zjor.app.manager.TaskManager;
 import me.zjor.auth.AuthUser;
 import me.zjor.auth.AuthUserManager;
 import me.zjor.guice.TestRunner;
-import me.zjor.model.Task;
+import me.zjor.app.model.Task;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

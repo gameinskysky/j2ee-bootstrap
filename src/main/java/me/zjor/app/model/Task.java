@@ -1,4 +1,4 @@
-package me.zjor.model;
+package me.zjor.app.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,16 +31,31 @@ public class Task implements Serializable {
     @JoinColumn(name = "user_id", nullable = false)
     private AuthUser user;
 
+    /**
+     * Original text entered by user
+     */
+    @Column(name = "source", nullable = true)   //TODO: change to nullable = false
+    private String source;
+
+    /**
+     * Extracted text
+     * Tags are removed
+     */
     @Column(name = "task", nullable = false)
     private String task;
+
+    @Column(name = "tags", nullable = true)
+    private String tags;
 
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 
-    public static Task create(EntityManager em, AuthUser user, String task) {
+    public static Task create(EntityManager em, AuthUser user, String source, String task, String tags) {
         Task t = new Task();
         t.setUser(user);
+        t.setSource(source);
         t.setTask(task);
+        t.setTags(tags);
         t.setCreationDate(new Date());
         em.persist(t);
         return t;

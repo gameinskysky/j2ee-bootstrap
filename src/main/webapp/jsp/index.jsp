@@ -1,9 +1,16 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<c:set var="baseURL"
+       value="${fn:replace(pageContext.request.requestURL, pageContext.request.requestURI, pageContext.request.contextPath)}"/>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>J2EE Bootstrap</title>
-    <link rel="stylesheet" href="static/css/reset.css">
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="${baseURL}/static/css/reset.css">
+    <link rel="stylesheet" href="${baseURL}/static/css/style.css">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 </head>
@@ -12,6 +19,9 @@
 <div class="right">
     <p>
     Logged in as ${it.user.login}
+    </p>
+    <p>
+        <a href="${baseURL}/logout">logout</a>
     </p>
 </div>
 
@@ -33,21 +43,38 @@
         loadTasks();
     });
 
+    function appendTask(task) {
+        var li = $('<li></li>');
+        var leftDiv = $('<div></div>').addClass('left');
+
+        for (var i = 0; i < task.tags.length; i++) {
+            var tag = $('<span></span>').addClass('tag');
+            tag.append(task.tags[i]);
+            //TODO: set class with color here
+            leftDiv.append(tag);
+        }
+        var taskBody = leftDiv.append(task.task);
+        var taskControls = $('<div></div>').addClass('right').addClass('delete');
+        taskControls.append('<a href=\"javascript:void(0);\" data-ref=\"' + task.id + '\">Delete</a>');
+        li.append($('<div></div>').addClass('clearfix').append(taskBody).append(taskControls));
+        $("#tasksList").append(li);
+    }
+
     function loadTasks() {
         $("#tasksList").empty();
         $.get("api/tasks/", function(response) {
-            response.map(function(task) {
-                $("#tasksList").append("<li><div class=\"clearfix\"><div class=\"left\">" + task.task + "</div><div class=\"right delete\"><a href=\"javascript:void(0);\" data-ref=\"" + task.id + "\">Delete</a></div></div></li>");
-            });
+            response.map(appendTask);
             updateListeners();
+            console.log(response);
         });
     }
 
     function submitTask(task) {
         console.log('Submitting: ' + task);
         $.post("api/tasks/add", {task: task}, function (response) {
-                    $("#tasksList").append("<li><div class=\"clearfix\"><div class=\"left\">" + response.task + "</div><div class=\"right delete\"><a href=\"javascript:void(0);\" data-ref=\"" + response.id + "\">Delete</a></div></div></li>");
+                    appendTask(response);
                     updateListeners();
+                    $('#newTaskInput').val(response.tags.join(' '));
                 }
         );
     }

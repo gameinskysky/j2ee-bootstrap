@@ -1,9 +1,12 @@
-package me.zjor.manager;
+package me.zjor.app.manager;
 
 import com.google.inject.persist.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.app.service.TaskService;
 import me.zjor.auth.AuthUser;
-import me.zjor.model.Task;
+import me.zjor.app.model.Task;
+import me.zjor.manager.AbstractManager;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityTransaction;
 import java.util.List;
@@ -16,8 +19,13 @@ import java.util.List;
 public class TaskManager extends AbstractManager {
 
     @Transactional
-    public Task add(AuthUser user, String task) {
-        return Task.create(jpa(), user, task);
+    public Task add(AuthUser user, String source) {
+        return Task.create(
+                jpa(),
+                user,
+                source,
+                TaskService.removeTags(source),
+                StringUtils.join(TaskService.extractTags(source), ','));
     }
 
     public Task findById(String taskId) {

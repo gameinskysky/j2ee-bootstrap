@@ -1,7 +1,9 @@
 package me.zjor.session;
 
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.auth.AuthFilter;
 import me.zjor.util.CookieUtils;
+import me.zjor.util.HttpUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -30,17 +32,19 @@ public class SessionFilter implements Filter {
 
         if (LOGOUT_URI_REGEXP.matcher(request.getServletPath()).matches()) {
             CookieUtils.deleteCookie(request, response, SESSION_ID_COOKIE_KEY);
-            //TODO: decide here to redirect after logout
+            //TODO: decide here to redirect after logout, for now it's login page
+            response.sendRedirect(HttpUtils.getBaseURL(request) + AuthFilter.LOGIN_REDIRECT_URL);
+        } else {
+
+            String sessionId = CookieUtils.getCookieValue(request, SESSION_ID_COOKIE_KEY);
+
+            if (sessionId == null || Session.init(sessionId) == null) {
+                sessionId = Session.create().getSessionId();
+                CookieUtils.setCookie(response, SESSION_ID_COOKIE_KEY, sessionId);
+            }
+
+            chain.doFilter(request, response);
         }
-
-        String sessionId = CookieUtils.getCookieValue(request, SESSION_ID_COOKIE_KEY);
-
-        if (sessionId == null || Session.init(sessionId) == null) {
-            sessionId = Session.create().getSessionId();
-            CookieUtils.setCookie(response, SESSION_ID_COOKIE_KEY, sessionId);
-        }
-
-        chain.doFilter(request, response);
     }
 
     @Override

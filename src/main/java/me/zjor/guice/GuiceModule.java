@@ -5,10 +5,10 @@ import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletScopes;
 import me.zjor.JpaInitializer;
 import me.zjor.auth.*;
-import me.zjor.controller.AjaxController;
+import me.zjor.app.controller.AjaxController;
 import me.zjor.controller.Application;
 import me.zjor.controller.SampleController;
-import me.zjor.manager.TaskManager;
+import me.zjor.app.manager.TaskManager;
 import me.zjor.session.SessionManager;
 import me.zjor.session.SessionService;
 
