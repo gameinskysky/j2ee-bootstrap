@@ -3,12 +3,15 @@ package me.zjor.app.controller;
 import lombok.extern.slf4j.Slf4j;
 import me.zjor.app.dto.TaskDTO;
 import me.zjor.app.manager.TaskManager;
+import me.zjor.app.model.TaskStatus;
+import me.zjor.app.service.TaskService;
 import me.zjor.auth.AuthUserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author: Sergey Royz
@@ -22,12 +25,18 @@ public class AjaxController {
     private TaskManager taskManager;
 
     @Inject
+    private TaskService taskService;
+
+    @Inject
     private AuthUserService userService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TaskDTO> getTasks() {
-        return TaskDTO.fromCollection(taskManager.fetchAll(userService.get().getId()));
+    public Map<String, Object> getTasks() {
+        Map<String, Object> tasks = new HashMap<String, Object>();
+        tasks.put("active", TaskDTO.fromCollection(taskManager.find(userService.get().getId(), TaskStatus.ACTIVE)));
+        tasks.put("done", TaskDTO.fromCollection(taskManager.find(userService.get().getId(), TaskStatus.DONE)));
+        return tasks;
     }
 
     @POST
@@ -41,8 +50,14 @@ public class AjaxController {
     @POST
     @Path("/delete")
     public void deleteTask(@FormParam("id") String id) {
-        AjaxController.log.info("removing task with id: {}", id);
-        taskManager.remove(id);
+        taskService.setStatus(id, TaskStatus.DELETED);
     }
+
+    @POST
+    @Path("/complete")
+    public void completeTask(@FormParam("id") String id) {
+        taskService.setStatus(id, TaskStatus.DONE);
+    }
+
 
 }

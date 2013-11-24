@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletScopes;
 import me.zjor.JpaInitializer;
+import me.zjor.app.service.TaskService;
 import me.zjor.auth.*;
 import me.zjor.app.controller.AjaxController;
 import me.zjor.controller.Application;
@@ -28,6 +29,7 @@ public class GuiceModule extends AbstractModule {
         bind(AuthUserService.class).in(Singleton.class);
 
         bind(TaskManager.class).in(Singleton.class);
+        bind(TaskService.class).in(Singleton.class);
 
         bind(AuthController.class).in(Singleton.class);
         bind(AjaxController.class).in(Singleton.class);

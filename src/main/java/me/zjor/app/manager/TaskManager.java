@@ -2,6 +2,7 @@ package me.zjor.app.manager;
 
 import com.google.inject.persist.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.app.model.TaskStatus;
 import me.zjor.app.service.TaskService;
 import me.zjor.auth.AuthUser;
 import me.zjor.app.model.Task;
@@ -9,6 +10,7 @@ import me.zjor.manager.AbstractManager;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityTransaction;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,7 +27,8 @@ public class TaskManager extends AbstractManager {
                 user,
                 source,
                 TaskService.removeTags(source),
-                StringUtils.join(TaskService.extractTags(source), ','));
+                StringUtils.join(TaskService.extractTags(source), ','),
+                TaskStatus.ACTIVE);
     }
 
     public Task findById(String taskId) {
@@ -48,6 +51,14 @@ public class TaskManager extends AbstractManager {
         return jpa()
                 .createQuery("SELECT t FROM Task t WHERE t.user.id = :id ORDER BY t.creationDate ASC", Task.class)
                 .setParameter("id", userId)
+                .getResultList();
+    }
+
+    public List<Task> find(String userId, TaskStatus status) {
+        return jpa()
+                .createQuery("SELECT t FROM Task t WHERE t.user.id = :id AND t.status = :status ORDER BY t.creationDate ASC", Task.class)
+                .setParameter("id", userId)
+                .setParameter("status", status)
                 .getResultList();
     }
 

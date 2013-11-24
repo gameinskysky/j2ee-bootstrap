@@ -34,7 +34,7 @@ public class Task implements Serializable {
     /**
      * Original text entered by user
      */
-    @Column(name = "source", nullable = true)   //TODO: change to nullable = false
+    @Column(name = "source", nullable = false)
     private String source;
 
     /**
@@ -47,15 +47,20 @@ public class Task implements Serializable {
     @Column(name = "tags", nullable = true)
     private String tags;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private TaskStatus status;
+
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 
-    public static Task create(EntityManager em, AuthUser user, String source, String task, String tags) {
+    public static Task create(EntityManager em, AuthUser user, String source, String task, String tags, TaskStatus status) {
         Task t = new Task();
         t.setUser(user);
         t.setSource(source);
         t.setTask(task);
         t.setTags(tags);
+        t.setStatus(status);
         t.setCreationDate(new Date());
         em.persist(t);
         return t;
