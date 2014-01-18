@@ -16,6 +16,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "session_data")
+//TODO: consider versioning and optimistic lock
+//TODO: the same session might be modified from different threads
 public class SessionModel {
 
     @Id

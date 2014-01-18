@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="${baseURL}/static/css/reset.css">
     <link rel="stylesheet" href="${baseURL}/static/css/style.css">
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="${baseURL}/static/js/jquery-1.10.2.min.js"></script>
 </head>
 <body>
 

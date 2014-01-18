@@ -24,6 +24,7 @@ public class SessionManager extends AbstractManager {
             model = new SessionModel(session.getSessionId(), encryptedData, session.getExpirationDate());
         } else {
             model.setSessionData(encryptedData);
+			model.setExpirationDate(session.getExpirationDate());
         }
 
         jpa().persist(model);

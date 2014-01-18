@@ -1,5 +1,7 @@
 package me.zjor.session;
 
+import me.zjor.session.expiration.SessionExpirationPolicyChain;
+
 import javax.inject.Inject;
 import java.util.Date;
 
@@ -13,6 +15,9 @@ public class SessionService {
 
     @Inject
     private SessionManager manager;
+
+	@Inject
+	private SessionExpirationPolicyChain expirationPolicyChain;
 
     public SessionService() {
         Session.setService(this);
@@ -40,12 +45,12 @@ public class SessionService {
         if (session == null) {
             return null;
         }
-        if (session.getExpirationDate().before(new Date())) {
-            manager.remove(sessionId);
-            return null;
-        }
-        setCurrent(session);
-        update(session);
+
+		session = expirationPolicyChain.process(session);
+		if (session != null) {
+			setCurrent(session);
+		}
+
         return session;
     }
 
@@ -54,7 +59,7 @@ public class SessionService {
     }
 
     public void update(Session session) {
-        session.setExpirationDate(new Date(new Date().getTime() + Session.DEFAULT_EXPIRATION_PERIOD_MILLIS));
+        session.setExpirationDate(new Date(new Date().getTime() + Session.DEFAULT_EXTENSION_PERIOD_MILLIS));
         manager.persist(session);
     }
 

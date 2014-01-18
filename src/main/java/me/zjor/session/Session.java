@@ -20,6 +20,10 @@ public class Session {
      */
     public static final long DEFAULT_EXPIRATION_PERIOD_MILLIS = 24L * 3600 * 1000;
 
+	public static final long DEFAULT_EXTENSION_PERIOD_MILLIS = 1L * 3600 * 1000;
+
+	public static final long DEFAULT_MIN_CHANGE_INTERVAL_MILLIS = 60L * 1000;
+
     @Setter
     private static SessionService service;
 

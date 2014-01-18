@@ -1,17 +1,21 @@
 package me.zjor.guice;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletScopes;
 import me.zjor.JpaInitializer;
+import me.zjor.app.controller.AjaxController;
+import me.zjor.app.manager.TaskManager;
 import me.zjor.app.service.TaskService;
 import me.zjor.auth.*;
-import me.zjor.app.controller.AjaxController;
 import me.zjor.controller.Application;
 import me.zjor.controller.SampleController;
-import me.zjor.app.manager.TaskManager;
+import me.zjor.session.Session;
 import me.zjor.session.SessionManager;
 import me.zjor.session.SessionService;
+import me.zjor.session.expiration.SessionExpirationPolicyChain;
 
 /**
  * @author: Sergey Royz
@@ -22,9 +26,12 @@ public class GuiceModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JpaInitializer.class).asEagerSingleton();
-        bind(SessionService.class).asEagerSingleton();
 
-        bind(SessionManager.class).in(Singleton.class);
+
+        bind(SessionService.class).asEagerSingleton();
+		bind(SessionManager.class).in(Singleton.class);
+		bind(SessionExpirationPolicyChain.class).toProvider(SessionExpirationPolicyChainProvider.class).in(Singleton.class);
+
         bind(AuthUserManager.class).in(Singleton.class);
         bind(AuthUserService.class).in(Singleton.class);
 
@@ -39,5 +46,25 @@ public class GuiceModule extends AbstractModule {
         bind(String.class).annotatedWith(UserId.class).toProvider(UserIdProvider.class).in(ServletScopes.REQUEST);
 
     }
+
+	protected static class SessionExpirationPolicyChainProvider implements Provider<SessionExpirationPolicyChain> {
+
+		private SessionManager sessionManager;
+
+		@Inject
+		public SessionExpirationPolicyChainProvider(SessionManager sessionManager) {
+			this.sessionManager = sessionManager;
+		}
+
+		@Override
+		public SessionExpirationPolicyChain get() {
+			return new SessionExpirationPolicyChain.ExpireSessionPolicy(sessionManager,
+					new SessionExpirationPolicyChain.ExtendSessionPolicy(
+							Session.DEFAULT_EXTENSION_PERIOD_MILLIS,
+							sessionManager,
+							null)
+			);
+		}
+	}
 
 }
