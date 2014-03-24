@@ -3,13 +3,17 @@ package me.zjor.auth;
 import com.sun.jersey.api.view.Viewable;
 import lombok.extern.slf4j.Slf4j;
 import me.zjor.session.Session;
+import me.zjor.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author: Sergey Royz
@@ -17,9 +21,11 @@ import java.util.Collections;
  */
 @Slf4j
 @Path("/")
-public class AuthController {
+public class BasicAuthController implements AuthProvider {
 
-    @Inject
+	public static final Pattern ALLOW_URI_REGEXP = Pattern.compile("(/login/?)|(/register/?)|(/static/.*)");
+
+	@Inject
     private AuthUserManager userManager;
 
     @GET
@@ -82,4 +88,25 @@ public class AuthController {
                 Collections.singletonMap("url", nextURL))).build();
     }
 
+	//TODO: remove this in future
+	@GET
+	@Path("/landing")
+	public Response landing() {
+		return Response.ok(new Viewable("/landing")).build();
+	}
+
+	@Override
+	public String getLoginURL(HttpServletRequest request) {
+		return HttpUtils.getBaseURL(request) + "/login/";
+	}
+
+	@Override
+	public boolean isPublic(String uri) {
+		return ALLOW_URI_REGEXP.matcher(uri).matches();
+	}
+
+	@Override
+	public void authenticate(Map<String, Object> userData) {
+
+	}
 }

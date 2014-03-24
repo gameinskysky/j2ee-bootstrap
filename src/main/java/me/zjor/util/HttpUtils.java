@@ -1,12 +1,20 @@
 package me.zjor.util;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author: Sergey Royz
  * @since: 09.11.2013
  */
 public class HttpUtils {
+
+	public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /**
      * @param req
@@ -51,5 +59,21 @@ public class HttpUtils {
         String contextPath = request.getContextPath();
         return url.replace(uri, contextPath);
     }
+
+	/**
+	 * Parses params from string like param=val&param2=val2 into a map
+	 * @param input
+	 * @return
+	 */
+	public static Map<String, String> parseURLEncodedParams(String input) {
+
+		Map<String, String> params = new HashMap<String, String>();
+		for (NameValuePair param: URLEncodedUtils.parse(input, UTF_8)) {
+			params.put(param.getName(), param.getValue());
+		}
+
+		return params;
+
+	}
 
 }

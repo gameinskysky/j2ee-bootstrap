@@ -1,7 +1,6 @@
 package me.zjor.session;
 
 import lombok.extern.slf4j.Slf4j;
-import me.zjor.auth.AuthFilter;
 import me.zjor.util.CookieUtils;
 import me.zjor.util.HttpUtils;
 
@@ -32,8 +31,7 @@ public class SessionFilter implements Filter {
 
         if (LOGOUT_URI_REGEXP.matcher(request.getServletPath()).matches()) {
             CookieUtils.deleteCookie(request, response, SESSION_ID_COOKIE_KEY);
-            //TODO: decide here to redirect after logout, for now it's login page
-            response.sendRedirect(HttpUtils.getBaseURL(request) + AuthFilter.LOGIN_REDIRECT_URL);
+            response.sendRedirect(HttpUtils.getBaseURL(request));
         } else {
 
             String sessionId = CookieUtils.getCookieValue(request, SESSION_ID_COOKIE_KEY);

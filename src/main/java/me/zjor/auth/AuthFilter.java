@@ -1,5 +1,6 @@
 package me.zjor.auth;
 
+import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import me.zjor.session.Session;
 import me.zjor.util.HttpUtils;
@@ -8,7 +9,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 /**
  * @author: Sergey Royz
@@ -19,8 +19,9 @@ public class AuthFilter implements Filter {
 
     public static final String SESSION_KEY_AUTH_USER_ID = "auth_user_id";
     public static final String SESSION_KEY_AUTH_NEXT = "auth_next";
-    public static final String LOGIN_REDIRECT_URL = "/login/";
-    public static final Pattern ALLOW_URI_REGEXP = Pattern.compile("(/login/?)|(/register/?)|(/static/.*)");
+
+	@Inject
+	private AuthProvider authProvider;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -33,22 +34,13 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
         String userId = Session.get(SESSION_KEY_AUTH_USER_ID);
-        if (userId == null && !allowPassThrough(request)) {
+        if (userId == null && !authProvider.isPublic(request.getServletPath())) {
             Session.put(SESSION_KEY_AUTH_NEXT, HttpUtils.getRequestURL(request));
-            response.sendRedirect(HttpUtils.getBaseURL(request) + LOGIN_REDIRECT_URL);
+            response.sendRedirect(authProvider.getLoginURL(request));
         } else {
             AuthUserService.setUserId(userId);
             chain.doFilter(req, resp);
         }
-    }
-
-    /**
-     * Checks whether we are trying go access login page
-     * @param request
-     * @return
-     */
-    private boolean allowPassThrough(HttpServletRequest request) {
-        return ALLOW_URI_REGEXP.matcher(request.getServletPath()).matches();
     }
 
     @Override

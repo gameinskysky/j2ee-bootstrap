@@ -13,6 +13,11 @@ public class AppGuiceServletContextListener extends GuiceServletContextListener 
 
     @Override
     protected Injector getInjector() {
-        return Guice.createInjector(new JpaPersistModule("AppJpaUnit"), new GuiceModule(), new GuiceServletModule());
+
+        return Guice.createInjector(
+				new JpaPersistModule("AppJpaUnit"),
+				new GuiceModule(),
+				new SocialAuthModule(),
+				new GuiceServletModule());
     }
 }

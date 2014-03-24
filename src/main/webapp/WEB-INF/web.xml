@@ -21,7 +21,7 @@
     </listener>
     
     <welcome-file-list>
-        <welcome-file>/app</welcome-file>
+        <welcome-file>/landing</welcome-file>
     </welcome-file-list>
 
 </web-app>

@@ -16,6 +16,9 @@ import me.zjor.session.Session;
 import me.zjor.session.SessionManager;
 import me.zjor.session.SessionService;
 import me.zjor.session.expiration.SessionExpirationPolicyChain;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 /**
  * @author: Sergey Royz
@@ -27,7 +30,6 @@ public class GuiceModule extends AbstractModule {
     protected void configure() {
         bind(JpaInitializer.class).asEagerSingleton();
 
-
         bind(SessionService.class).asEagerSingleton();
 		bind(SessionManager.class).in(Singleton.class);
 		bind(SessionExpirationPolicyChain.class).toProvider(SessionExpirationPolicyChainProvider.class).in(Singleton.class);
@@ -38,12 +40,15 @@ public class GuiceModule extends AbstractModule {
         bind(TaskManager.class).in(Singleton.class);
         bind(TaskService.class).in(Singleton.class);
 
-        bind(AuthController.class).in(Singleton.class);
+        bind(BasicAuthController.class).in(Singleton.class);
         bind(AjaxController.class).in(Singleton.class);
+
         bind(SampleController.class).in(Singleton.class);
         bind(Application.class).in(Singleton.class);
 
         bind(String.class).annotatedWith(UserId.class).toProvider(UserIdProvider.class).in(ServletScopes.REQUEST);
+
+		bind(HttpClient.class).toProvider(HttpClientProvider.class).in(Singleton.class);
 
     }
 
@@ -64,6 +69,17 @@ public class GuiceModule extends AbstractModule {
 							sessionManager,
 							null)
 			);
+		}
+	}
+
+	protected static class HttpClientProvider implements Provider<HttpClient> {
+
+		@Override
+		public HttpClient get() {
+			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+			cm.setDefaultMaxPerRoute(20);
+			cm.setMaxTotal(50);
+			return HttpClientBuilder.create().setConnectionManager(cm).build();
 		}
 	}
 
