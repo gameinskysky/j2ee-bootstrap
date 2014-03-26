@@ -1,6 +1,7 @@
 package me.zjor.auth;
 
 import com.google.inject.Provider;
+import me.zjor.auth.service.AuthUserService;
 
 /**
  * @author: Sergey Royz

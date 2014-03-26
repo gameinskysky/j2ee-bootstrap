@@ -3,8 +3,12 @@ package me.zjor.auth.social;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.google.inject.Inject;
+import com.sun.jersey.api.view.Viewable;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.auth.AuthFilter;
+import me.zjor.auth.model.SocialProfile;
+import me.zjor.session.Session;
 import me.zjor.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -21,6 +25,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.HttpURLConnection;
+import java.util.Collections;
 
 /**
  * @author: Sergey Royz
@@ -29,6 +34,9 @@ import java.net.HttpURLConnection;
 @Slf4j
 @Path("/socialauth/fb")
 public class FacebookAuthController {
+
+	@Inject
+	private FacebookAuthProvider authProvider;
 
 	@Context
 	private HttpServletRequest httpServletRequest;
@@ -46,10 +54,21 @@ public class FacebookAuthController {
 			return Response.status(Response.Status.FORBIDDEN).build();
 		}
 		try {
-
 			String accessToken = exchangeCodeForToken(code);
+			log.info("Obtained access token: {}", accessToken);
 
-			return Response.ok("ok: " + getUserInfo(accessToken)).build();
+			UserInfoDTO userInfo = getUserInfo(accessToken);
+			log.info("Received user info: {}", userInfo);
+
+			if (authProvider.authenticate(userInfo.toSocialProfileDTO())) {
+				String nextURL = Session.get(AuthFilter.SESSION_KEY_AUTH_NEXT);
+				Session.remove(AuthFilter.SESSION_KEY_AUTH_NEXT);
+
+				return Response.ok(new Viewable("/redirect",
+						Collections.singletonMap("url", nextURL))).build();
+			} else {
+				return Response.status(Response.Status.FORBIDDEN).entity("Authentication failed").build();
+			}
 		} catch (Exception e) {
 			log.error("Error while exchanging code for access token", e);
 			return Response
@@ -124,6 +143,24 @@ public class FacebookAuthController {
 		@SerializedName("picture")
 		private PictureDTO picture;
 
+		public PictureDTO getPicture() {
+			if (picture == null) {
+				picture = new PictureDTO();
+			}
+			return picture;
+		}
+
+		public SocialProfileDTO toSocialProfileDTO() {
+			SocialProfileDTO dto = new SocialProfileDTO();
+			dto.setSocialNetwork(SocialProfile.SocialNetwork.FACEBOOK);
+			dto.setProfileId(id);
+			dto.setFirstName(firstName);
+			dto.setLastName(lastName);
+			dto.setUsername(username);
+			dto.setAvatarURL(getPicture().getData().getUrl());
+			return dto;
+		}
+
 	}
 
 	@Data
@@ -131,6 +168,13 @@ public class FacebookAuthController {
 
 		@SerializedName("data")
 		private DataDTO data;
+
+		public DataDTO getData() {
+			if (data == null) {
+				data = new DataDTO();
+			}
+			return data;
+		}
 
 	}
 

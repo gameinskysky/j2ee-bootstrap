@@ -1,4 +1,4 @@
-package me.zjor.auth;
+package me.zjor.auth.model;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -27,10 +27,27 @@ public class AuthUser {
     @Column(name = "password", nullable = true)
     private String password;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 
-    @Column(name = "last_access_date")
+    @Column(name = "last_access_date", nullable = false)
     private Date lastAccessDate;
+
+	public static AuthUser create(EntityManager em, String login, String password) {
+		AuthUser user = new AuthUser();
+		user.login = login;
+		user.password = password;
+		Date now = new Date();
+		user.creationDate = now;
+		user.lastAccessDate = now;
+		return user;
+	}
+
+	/**
+	 * Should be used in @Transactional method
+	 */
+	public void touch() {
+		lastAccessDate = new Date();
+	}
 
 }

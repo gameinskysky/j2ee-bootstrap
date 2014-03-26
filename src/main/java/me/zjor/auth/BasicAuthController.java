@@ -2,6 +2,8 @@ package me.zjor.auth;
 
 import com.sun.jersey.api.view.Viewable;
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.auth.manager.AuthUserManager;
+import me.zjor.auth.model.AuthUser;
 import me.zjor.session.Session;
 import me.zjor.util.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +14,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -21,7 +22,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Path("/")
-public class BasicAuthController implements AuthProvider {
+public class BasicAuthController implements AuthProvider<Object> {
 
 	public static final Pattern ALLOW_URI_REGEXP = Pattern.compile("(/login/?)|(/register/?)|(/static/.*)");
 
@@ -106,7 +107,7 @@ public class BasicAuthController implements AuthProvider {
 	}
 
 	@Override
-	public void authenticate(Map<String, Object> userData) {
-
+	public boolean authenticate(Object user) {
+		return false;
 	}
 }

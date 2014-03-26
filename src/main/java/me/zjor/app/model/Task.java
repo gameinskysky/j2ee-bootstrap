@@ -3,7 +3,7 @@ package me.zjor.app.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import me.zjor.auth.AuthUser;
+import me.zjor.auth.model.AuthUser;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

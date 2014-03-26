@@ -1,7 +1,7 @@
 package me.zjor.controller;
 
 import com.sun.jersey.api.view.Viewable;
-import me.zjor.auth.AuthUserService;
+import me.zjor.auth.service.AuthUserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

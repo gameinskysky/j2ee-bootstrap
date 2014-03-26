@@ -2,6 +2,7 @@ package me.zjor.auth;
 
 import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import me.zjor.auth.service.AuthUserService;
 import me.zjor.session.Session;
 import me.zjor.util.HttpUtils;
 

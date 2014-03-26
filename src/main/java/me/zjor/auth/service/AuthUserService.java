@@ -1,4 +1,7 @@
-package me.zjor.auth;
+package me.zjor.auth.service;
+
+import me.zjor.auth.manager.AuthUserManager;
+import me.zjor.auth.model.AuthUser;
 
 import javax.inject.Inject;
 

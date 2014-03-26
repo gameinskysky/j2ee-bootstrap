@@ -4,13 +4,12 @@ import com.google.inject.persist.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import me.zjor.app.model.TaskStatus;
 import me.zjor.app.service.TaskService;
-import me.zjor.auth.AuthUser;
+import me.zjor.auth.model.AuthUser;
 import me.zjor.app.model.Task;
 import me.zjor.manager.AbstractManager;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityTransaction;
-import java.util.Date;
 import java.util.List;
 
 /**

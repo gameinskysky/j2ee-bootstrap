@@ -5,7 +5,7 @@ import me.zjor.app.dto.TaskDTO;
 import me.zjor.app.manager.TaskManager;
 import me.zjor.app.model.TaskStatus;
 import me.zjor.app.service.TaskService;
-import me.zjor.auth.AuthUserService;
+import me.zjor.auth.service.AuthUserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
